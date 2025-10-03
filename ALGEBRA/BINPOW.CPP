@@ -23,7 +23,7 @@ using namespace std;
 #define SQ2 (sqrt(2.0))
 
 const int INF = LLONG_MAX;
-
+const int MOD=1e9+7;
 
 //EXPO BINARIA
 
@@ -58,6 +58,58 @@ int modPow(int x,int y,int n){
     }
     return res;
 }
+
+
+//APLICACION PARA PERMUTACIONES
+
+//APLICAR PERMUTACION
+vi app(vi s,vi p){
+    vi ns(sz(s));
+    f(i,0,sz(s),1) ns[i]=s[p[i]];
+    return ns;
+}
+
+//LA PERMUTACION CON EXPO BINARIA
+vi perm(vi s,vi p, int k){
+    while(k>0){
+        if(k&1) s=app(s,p);
+        p=app(p,p);
+        k>>=1;
+    }
+    return s;
+}
+
+//MULTIPLICACION DE MATRICES
+vvi mMul(vvi &a,vvi &b){
+    int m=sz(a);
+    vvi c(m,vi(m,0));
+    f(i,0,m,1){
+        f(k,0,m,1){
+            if(a[i][k]==0)continue ;
+            int t=a[i][k];
+            f(j,0,m,1){
+                if(b[k][j]==0)continue;
+                c[i][j]=(c[i][j]+t*b[k][j])%MOD;
+            }
+        }
+    }
+    return c;
+}
+
+ //EXPO BINARIA DE MATRICES
+ vvi mPow(vvi b,int e){
+    int m=sz(b);
+    vvi r(m,vi(m,0));
+    f(i,0,m,1) r[i][i]=1;
+    while(e>0){
+        if(e&1) r=mMul(r,b);
+        b=mMul(b,b);
+        e>>=1;
+    }
+    return r;
+}
+
+
 
 
 signed main(){
