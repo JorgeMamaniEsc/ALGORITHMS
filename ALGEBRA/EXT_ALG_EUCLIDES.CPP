@@ -62,7 +62,7 @@ int gcd_xr(int a,int b,int &x,int &y){
 //version iterativa
 int gcd_x(int a,int b,int &x,int &y){
     x=1,y=0;
-    int x1=0,y1=0,a1=a,b1=b;
+    int x1=0,y1=1a1=a,b1=b;
     while(b1){
         int q=a1/b1;
         tie(x,x1)=make_tuple(x1,x-q*x1);
@@ -71,3 +71,4 @@ int gcd_x(int a,int b,int &x,int &y){
     }
     return a1;
 }
+
