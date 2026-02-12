@@ -43,56 +43,51 @@ int mp(int b,int e){
 }
 
 
+bool bfs(int x,vi &color, vvi &ady){
+    queue<int> q;
+    q.push(x);
+    color[x]=0;
+    while(!q.empty()){
+        int u=q.front();
+        q.pop();
+        for(int v:ady[u]){
+            if(color[v]==-1){
+                color[v]=color[u]^1;
+                q.push(v);
+            }else if(color[v]==color[u]) return false;
+        }
+    }
+    return true;
+
+}
 
 signed main(){
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    int tt=1;cin>>tt;
+    int tt=1;//cin>>tt;
     while(tt--){
-        int n,qq;cin>>n>>qq;
-        vi p(n+1,0),parent(n-1),h(n+1,0);
-        f(i,0,n-1,1) cin>>parent[i];
-        f(i,1,n+1,1) cin>>p[i];
-        queue<pii> q;
-        q.push({1,(n+1)/2});
-        while(!q.empty()){
-            auto [u,lvl]=q.front();
-            q.pop();
-            h[u]=lvl;
-            if(lvl>1){
-                q.push({u+1,lvl/2});
-                q.push({u+lvl,lvl/2});
-            }
-        }
-        int s=0;
-        f(i,1,n+1,1){
-            if(h[i]==1) continue;
-            s+=2;
-            if(p[i+1]/2==p[i]) s--;
-            if(p[i+h[i]]/2==p[i]) s--;
-        }
-        f(gg,0,qq,1){
+        int n,m;cin>>n>>m;
+        vvi ady(n);
+        f(i,0,m,1){
             int l,r;cin>>l>>r;
-            set<int> st={l,r,l-1,r-1,l-2*h[l],r-2*h[r]};
-            int s1=0,s2=0;
-            for(int i:st){
-                if(h[i]==1||i==0) continue;
-                s1+=2;
-                if(p[i+1]/2==p[i]) s1--;
-                if(p[i+h[i]]/2==p[i]) s1--;
-            }
-            swap(p[l],p[r]);
-            for(int i:st){
-                if(h[i]==1||i==0) continue;
-                s2+=2;
-                if(p[i+1]/2==p[i]) s2--;
-                if(p[i+h[i]]/2==p[i]) s2--;
-            }
-            s+=s2-s1;
-            cout<<(s==0?"YES":"NO")<<endl;
+            l--;r--;
+            ady[l].pb(r);
+            ady[r].pb(l);
         }
-
+        vi color(n,-1);
+        bool ok=false;
+        f(i,0,n,1){
+            if(color[i]!=-1) continue;
+            if(!bfs(i,color,ady)){
+                ok=true;
+                break;
+            }
+        }
+        if(ok) cout<<"IMPOSSIBLE";
+        else{
+            f(i,0,n,1) cout<<color[i]+1<<" ";
+        }
     }
 
 
