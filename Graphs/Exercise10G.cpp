@@ -26,12 +26,12 @@ using namespace std;
 #define sq2 (sqrt(2.0))
 #define ld long double
 //typedef tree<int, null_type, less<int>, rb_tree_tag,tree_order_statistics_node_update> ordered_set;
-
+ 
 //template <typename T>
 //using ordered_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
-
+ 
 const int MOD=998244353;
-const int inf=10000000000000000;
+const int inf=1000000000000000;
 int mp(int b,int e){
     int s=1;
     while(e>0){
@@ -41,35 +41,46 @@ int mp(int b,int e){
     }
     return s;
 }
-
+ 
 int sgn(int n){
     if(n==0) return 0;
     return (n<0?-1:1);
 }
-
+ 
 signed main(){
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
     int tt=1;//cin>>tt;
     while(tt--){
-        int n,m,q;cin>>n>>m>>q;
-        vvi dist(n,vi(n,inf));
-        f(i,0,n,1) dist[i][i]=0;
+        int n,m;cin>>n>>m;
+        vvp ady(n);
+        map<pii,int> mp;
         f(i,0,m,1){
             int a,b,c;cin>>a>>b>>c;
             a--;b--;
-            dist[a][b]=min(dist[a][b],c);
-            dist[b][a]=min(dist[b][a],c);
+            ady[a].pb({b,c});
         }
-        f(k,0,n,1) f(i,0,n,1) f(j,0,n,1) if(dist[i][k]!=inf&&dist[k][j]!=inf) dist[i][j]=min(dist[i][j],dist[i][k]+dist[k][j]);
-        while(q--){
-            int a,b;cin>>a>>b;
-            a--;b--;
-            if(dist[a][b]==inf) cout<<-1<<endl;
-            else cout<<dist[a][b]<<endl;
+ 
+        vi mn(n,inf);
+        multiset<pii> q;
+        mn[0]=0;
+        q.insert({0,0});
+ 
+        while(!q.empty()){
+            auto it=q.begin();
+            auto [d,u]=*it;
+            q.erase(it);
+            if(d>mn[u]) continue;
+ 
+            for(auto [v,w]:ady[u]){
+                if(mn[v]>mn[u]+w){
+                    mn[v]=mn[u]+w;
+                    q.insert({mn[v],v});
+                }
+            }
         }
-
+        f(i,0,n,1) cout<<mn[i]<<" ";
     }
-
+ 
     return 0;
 }
