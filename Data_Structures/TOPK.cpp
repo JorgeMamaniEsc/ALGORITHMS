@@ -48,7 +48,7 @@ int dy[4]={0,0,1,-1};
 
 pii no={-1,-1};
 
-struct TopK{
+struct CosaK{
     int k;
     int s;
     multiset<int> top,rem;
@@ -120,7 +120,7 @@ signed main(){
             cout<<a[0]<<endl;
             continue;
         }
-        TopK tk;
+        CosaK tk;
         tk.ini(k-1);
         f(i,0,n,1){
             in1[i]={-1000000000,-i};
