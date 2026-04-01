@@ -29,13 +29,13 @@ using namespace std;
 
 //template <typename T>
 //using ordered_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
-const int mx=3e5+5;
+
 const int MOD=1000000007;
 const int inf=10000000000000000;
 
 int dx[4]={1,-1,0,0};
 int dy[4]={0,0,1,-1};
-int fact[mx],inv[mx];
+
 
 
 //NUMEROS DE CATALAN
@@ -70,6 +70,9 @@ int mp(int b,int e){
     }
     return s;
 }
+
+const int mx=3e5+5;
+int fact[mx],inv[mx];
 void ini(){
     fact[0]=1;
     f(i,1,mx,1) fact[i]=(fact[i-1]*i)%MOD;
