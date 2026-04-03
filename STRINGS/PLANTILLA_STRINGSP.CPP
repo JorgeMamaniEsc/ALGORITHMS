@@ -94,10 +94,10 @@ vi dame_z(string &s){
 }
 
 //string hashing
-struct hash{
+struct Hash{
     const int b1=313,b2=317,m1=1000000007,m2=1000000009;
     vi h1,h2,p1,p2;
-    hash(string &s){
+    Hash(string &s){
         int n=sz(s);
         h1.assign(n+1,0);
         h2.assign(n+1,0);
@@ -117,7 +117,11 @@ struct hash{
         if(hash2<0) hash2+=m2;
         return {hash1,hash2};
     }
+
 };
+bool esPal(int l,int r,Hash &hs,Hash &hr,int n){
+    return hs.get_hash(l,r)==hr.get_hash(n-1-r,n-1-l);
+}
 
 
 signed main(){
