@@ -30,11 +30,12 @@ using namespace std;
 //using ordered_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
 
 struct DSU{
-    vi parent,tam;
-    
+    vi parent,tam,aris;
+
     DSU(int n){
         parent.resize(n);
         tam.assign(n,1);
+        aris.assign(n,0);
         iota(all(parent),0);
     }
 
@@ -46,17 +47,27 @@ struct DSU{
     bool unite(int a, int b){
         a=find(a);
         b=find(b);
-        if(a==b) return false;
+        if(a==b) {
+            aris[a]++;
+            return false;
+        }
         if(tam[a]<tam[b]) swap(a,b);
         parent[b]=a;
         tam[a]+=tam[b];
+        aris[a]+=aris[b]+1;
         return true;
     }
 
     int size(int x){
         return tam[find(x)];
     }
+
+    bool clique(int x){
+        int k=size(x);
+        return (k*(k-1))/2==aris[find(x)];
+    }
 };
+
 
 
 signed main()
