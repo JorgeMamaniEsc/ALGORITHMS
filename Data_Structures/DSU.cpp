@@ -29,14 +29,16 @@ using namespace std;
 //template <typename T>
 //using ordered_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
 
+
 struct DSU{
     vi parent,tam,aris;
-
+    vb self;
     DSU(int n){
         parent.resize(n);
         tam.assign(n,1);
         aris.assign(n,0);
         iota(all(parent),0);
+        self.assign(n,false);
     }
 
     int find(int x){
@@ -45,16 +47,19 @@ struct DSU{
     }
 
     bool unite(int a, int b){
+        bool ok=(a==b);
         a=find(a);
         b=find(b);
         if(a==b) {
             aris[a]++;
+            if(ok) self[a]=true;
             return false;
         }
         if(tam[a]<tam[b]) swap(a,b);
         parent[b]=a;
         tam[a]+=tam[b];
         aris[a]+=aris[b]+1;
+        self[a]=(self[a]||self[b]);
         return true;
     }
 
