@@ -91,7 +91,9 @@ int perm(int n, int k) {
 int cat(int n){
     return com(2*n,n)*mp(n+1,MOD-2)%MOD;
 }
-
+int barras(int n,int k){
+    return com(n+k-1,k-1);
+}
 
 //version dp
 int precat(vi &cata){
