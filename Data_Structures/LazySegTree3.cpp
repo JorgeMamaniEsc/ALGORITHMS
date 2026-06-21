@@ -12,6 +12,7 @@ using namespace std;
 #define vd vector<long double>
 #define vs vector<string>
 #define vc vector<char>
+#define vvc vector<vector<char>>
 #define vvi vector<vector<int>>
 #define vvvi vector<vector<vector<int>>>
 #define vb vector<bool>
@@ -27,13 +28,24 @@ using namespace std;
 #define pi 3.14159265358979323846
 #define sq2 (sqrt(2.0))
 #define ld long double
+#define vmp vector<map<int,int>>
 //typedef tree<int, null_type, less<int>, rb_tree_tag,tree_order_statistics_node_update> ordered_set;
 
 //template <typename T>
 //using ordered_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
 const ld eps=1e-9;
 const int MOD=998244353;
-const int inf=3000000000000000000;
+//const int MOD=1000000007;
+const int inf=1000000000000000000;
+int mpv1(int b,int e){
+    int s=1;
+    while(e>0){
+        if(e&1) s=(s*b);
+        b=(b*b);
+        e>>=1;
+    }
+    return s;
+}
 int mp(int b,int e){
     int s=1;
     while(e>0){
@@ -47,7 +59,8 @@ int dx[4]={1,-1,0,0};
 int dy[4]={0,0,1,-1};
 char mov[4]={'D','U','R','L'};
 
-const pii no={-1,-1};
+//const pii no={-1,-1};
+const pii no={-inf,-inf};
 
 int lcm(int a,int b){
     return a/__gcd(a,b)*b;
@@ -71,12 +84,6 @@ int mex(vi &v){
     rep(i,0,n+2,1) if(fre[i]==0) return i;
 }
 
-int ask(int l,int r){
-    cout<<"? "<<l<<" "<<r<<endl;
-    cout.flush();
-    int x;cin>>x;
-    return x;
-}
 int damek(int x){
     int t=0;
     while(x%2==0){
@@ -126,45 +133,121 @@ bool mismarecta(pii p1,pii p2,pii p3){
     return (((y2-y1)*(x3-x1))==((y3-y1)*(x2-x1)));
 }
 
+int disteu(pii p1,pii p2){
+    auto [x1,y1]=p1;
+    auto [x2,y2]=p2;
+    return (x1-x2)*(x1-x2)+(y1-y2)*(y1-y2);
+}
+
+ld raizeu(pii p1,pii p2){
+    auto [x1,y1]=p1;
+    auto [x2,y2]=p2;
+    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+}
+int pcruz(pii o,pii p1,pii p2){
+    auto [x1,y1]=p1;
+    auto [x2,y2]=p2;
+    auto [o1,o2]=o;
+    return (x1-o1)*(y2-o2)-(y1-o2)*(x2-o1);
+}
+
+int next2(int n){
+    int x=1;
+    while(x<n) x<<=1ll;
+    return x;
+}
+int sd(int x){
+    int t=0;
+    while(x>0){
+        t+=x%10;
+        x/=10;
+    }
+    return t;
+}
+int tam10(int x){
+    int t=0;
+    if(x==0) return 1;
+    while(x>0){
+        x/=10;
+        t++;
+    }
+    return t;
+}
+
+string sumastring(string a,string b){
+    reverse(all(a));
+    reverse(all(b));
+    int n=max(sz(a),sz(b));
+    int c=0;
+    string ans;
+    rep(i,0,n,1){
+        int x=(sz(a)<=i?0:a[i]-'0'),y=(sz(b)<=i?0:b[i]-'0');
+        int t=x+y+c;
+        char d=(t%10)+'0';
+        ans.pb(d);
+        c=t/10;
+    }
+    if(c>0) ans.pb(c+'0');
+    reverse(all(ans));
+    return ans;
+}
+
+pii intersec(pii p1,pii p2){
+    if(!choque(p1,p2)) return no;
+    auto [x1,y1]=p1;
+    auto [x2,y2]=p2;
+    int a=max(x1,x2);
+    int b=min(y1,y2);
+    return {a,b};
+}
+
+
 struct SegTree{
     int n;
-    vi tree,lazy;
+    vi tree,lazy,mx;
     SegTree(int nn){
         n=nn;
         tree.resize(4*n+1);
-        lazy.assign(4*n+1,0);
+        lazy.assign(4*n+1,-1);
+        mx.resize(4*n+1);
     }
 
     void push(int u,int l,int r){
-        if(lazy[u]!=0&&l!=r){
-            lazy[2*u]+=lazy[u];
-            tree[2*u]+=lazy[u];
-            lazy[2*u+1]+=lazy[u];
-            tree[2*u+1]+=lazy[u];
+        int mid=(l+r)/2;
+        if(lazy[u]!=-1&&l!=r){
+            lazy[2*u]=lazy[u];
+            tree[2*u]=lazy[u]*(mid-l+1);
+            mx[2*u]=lazy[u];
+            lazy[2*u+1]=lazy[u];
+            tree[2*u+1]=lazy[u]*(r-mid);
+            mx[2*u+1]=lazy[u];
         }
-        lazy[u]=0;
+        lazy[u]=-1;
     }
 
     int merge(int izq,int der){
         return izq+der;
     }
 
-    void build(int u,int l,int r){
+    void build(int u,int l,int r,vi &v){
         if(l==r){
-            tree[u]=0;
+            tree[u]=v[l];
+            mx[u]=v[l];
             return;
         }
         int mid=(l+r)/2;
-        build(2*u,l,mid);
-        build(2*u+1,mid+1,r);
+        build(2*u,l,mid,v);
+        build(2*u+1,mid+1,r,v);
         tree[u]=merge(tree[2*u],tree[2*u+1]);
+        mx[u]=max(mx[2*u],mx[2*u+1]);
     }
 
     void update(int u,int l,int r,int ql,int qr,int x){
         if(l>qr||r<ql) return;
         if(ql<=l&&r<=qr){
-            tree[u]+=x;
-            lazy[u]+=x;
+            tree[u]=1LL*x*(r-l+1);
+            lazy[u]=x;
+            mx[u]=x;
             return;
         }
         push(u,l,r);
@@ -172,70 +255,53 @@ struct SegTree{
         update(2*u,l,mid,ql,qr,x);
         update(2*u+1,mid+1,r,ql,qr,x);
         tree[u]=merge(tree[2*u],tree[2*u+1]);
+        mx[u]=max(mx[2*u],mx[2*u+1]);
     }
     int qry(int u,int l,int r,int ql,int qr){
-        if(l>qr||r<ql) return inf;
+        if(l>qr||r<ql) return 0;
         if(ql<=l&&r<=qr) return tree[u];
         push(u,l,r);
         int mid=(l+r)/2;
         return merge(qry(2*u,l,mid,ql,qr),qry(2*u+1,mid+1,r,ql,qr));
     }
+    int find1(int u,int l,int r,int ql,int qr,int x){
+        if(l>qr||r<ql||mx[u]<=x) return -1;
+        if(l==r) return l;
+        push(u,l,r);
+        int mid=(l+r)/2;
+        int y=find1(2*u,l,mid,ql,qr,x);
+        if(y!=-1) return y;
+        return find1(2*u+1,mid+1,r,ql,qr,x);
+    }
 };
-
-
-
 signed main(){
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-
     int tt=1;cin>>tt;
     while(tt--){
         int n;cin>>n;
-        vi v(n);
-        rep(i,0,n,1) cin>>v[i];
-        vi ans;
+        vi p(n);
+        rep(i,0,n,1) cin>>p[i];
+        SegTree st(2*n);
+        int ans=0;
+        set<int> s;
         int me=0;
-        SegTree st(n);
-        st.build(1,0,n);
-        multiset<int> libres;
-        set<int> fijos;
-        for(int x:v){
-            if(x<me&&!fijos.count(x)){
-                fijos.insert(x);
-                st.update(1,0,n,0,x,1);
-            }else{
-                libres.insert(x);
-                int tmr=(x==0?-1:(x-1)/2);
-
-                if(tmr>-1)st.update(1,0,n,0,tmr,1);
-            }
-            int op=0;
-            while(true){
-                op=0;
-                if(libres.find(me)!=libres.end()){
-                    libres.erase(libres.find(me));
-                    fijos.insert(me);
-                    int xd=(me==0?-1:(me-1)/2);
-                    if(xd>-1)st.update(1,0,n,0,xd,-1);
-                }else{
-                    op=1;
-                    st.update(1,0,n,0,me,-1);
-                }
-                int k=st.qry(1,0,n,0,me);
-                if(k>=0) me++;
-                else{
-                    if(op==0){
-                        libres.insert(me);
-                        fijos.erase(fijos.find(me));
-                        int xd=(me==0?-1:(me-1)/2);
-                        if(xd>-1)st.update(1,0,n,0,xd,1);
-                    }else st.update(1,0,n,0,me,1);
-                    break;
-                }
-            }
-            cout<<me<<" ";
+        vi v(2*n+10,n);
+        rep(i,0,n,1){
+            s.insert(p[i]);
+            while(s.count(me)) me++;
+            v[i]=me;
         }
-        cout<<endl;
+        st.build(1,0,2*n,v);
+        ans=st.qry(1,0,2*n,0,n-1);
+        rep(i,0,n,1){
+            int x=p[i];
+            int r=st.find1(1,0,2*n,i+1,i+n-1,x);
+            st.update(1,0,2*n,r,i+n-1,x);
+            ans=max(ans,st.qry(1,0,2*n,i+1,i+n));
+        }
+        cout<<ans<<endl;
+
     }
     return 0;
 }
