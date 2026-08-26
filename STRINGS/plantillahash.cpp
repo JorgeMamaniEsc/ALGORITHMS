@@ -37,8 +37,8 @@ using namespace std;
 //template <typename T>
 //using ordered_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
 const ld eps=1e-9;
-//const int MOD=998244353;
-const int MOD=1000000007;
+const int MOD=998244353;
+//const int MOD=1000000007;
 //const int MOD=1000003;
 //const int inf=2000000000000000000;
 const int inf=1000000000000000000LL;
@@ -61,6 +61,7 @@ int mp(int b,int e){
     }
     return s;
 }
+
 int dx[4]={1,-1,0,0};
 int dy[4]={0,0,1,-1};
 char mov[4]={'D','U','R','L'};
@@ -75,6 +76,8 @@ int sgn(int x){
     if(x==0) return 0;
     return (x<0?-1:1);
 }
+
+
 bool choque(pii a,pii b){
     if(a>b) swap(a,b);
     auto [l1,r1]=a;
@@ -273,13 +276,21 @@ struct cosa{
         return r<o.r;
     }
 };
+static const int m1 = 1000000007LL;
+static const int m2 = 1000000009LL;
+static const int b1 = 313;
+static const int b2 = 317;
 
-struct node{
-    int a,b,c;
-};
-
+int damehash(string &v){
+    int n=sz(v),h1=0,h2=0;
+    for (int i=0;i<n;i++) {
+        int val=v[i];
+        h1=(h1*b1+val)%m1;
+        h2=(h2*b2+val)%m2;
+    }
+    return h1*m2+h2;
+}
 struct Hash{
-    const int b1=313,b2=317,m1=1000000007,m2=1000000009;
     vi h1,h2,p1,p2;
     Hash(string &s){
         int n=sz(s);
@@ -295,21 +306,49 @@ struct Hash{
         }
     }
 
-    int get_hash(int l,int r){
+    int qry(int l,int r){
         int hash1=(h1[r+1]-h1[l]*p1[r-l+1])%m1,hash2=(h2[r+1]-h2[l]*p2[r-l+1])%m2;
         if(hash1<0) hash1+=m1;
         if(hash2<0) hash2+=m2;
-        return hash1 * m2 + hash2;
+        return hash1*m2 +hash2;
     }
 
 };
 
-//salva vidas
-struct Hasha {
-    size_t operator()(const pii& p) const {
-        return p.first^(p.second+0x9e3779b97f4a7c15LL+(p.first<<6)+(p.first>>2));
+void mikunakano(){
+    int n,k;cin>>n>>k;
+    int m=n*k;
+    string s;cin>>s;
+    map<int,int> ide;
+    int g;cin>>g;
+    rep(i,1,g+1,1){
+        string x;cin>>x;
+        ide[damehash(x)]=i;
     }
-};
+    s=s+s.substr(0,k);
+    Hash h(s);
+    rep(p,0,k,1){
+        vi ans;
+        bool ok=false;
+        set<int> vis;
+        rep(l,p,m,k){
+            int r=l+k-1;
+            int q=h.qry(l,r);
+            if(!ide.count(q)||vis.count(q)) {
+                ok=true;
+                break;
+            }
+            ans.pb(ide[q]);
+            vis.insert(q);
+        }
+        if(ok) continue;
+        cout<<"YES"<<endl;
+        for(int x:ans) cout<<x<<" ";
+        cout<<endl;
+        return;
+    }
+    cout<<"NO"<<endl;
+}
 
 signed main(){
     ios::sync_with_stdio(false);
@@ -319,7 +358,7 @@ signed main(){
     int tt=1;
     //cin>>tt;
     while(tt--){
-        unordered_set<pii,Hasha> vis;
+        mikunakano();
     }
 
     return 0;
