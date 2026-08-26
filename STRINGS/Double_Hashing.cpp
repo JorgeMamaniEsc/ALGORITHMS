@@ -212,16 +212,16 @@ struct cosa{
     }
 };
 
-struct DoubleHash {
+struct Hash {
     static const int MOD1 = 1000000007LL;
     static const int MOD2 = 1000000009LL;
     static const int BASE = 911382323LL;
 
     vi h1,h2,p1,p2;
 
-    DoubleHash() {}
+    Hash() {}
 
-    DoubleHash(const vector<int>& s) {
+    Hash(const vector<int>& s) {
         int n=sz(s);
         h1.assign(n+1,0);
         h2.assign(n+1,0);
@@ -236,57 +236,24 @@ struct DoubleHash {
         }
     }
 
-    pii get(int l,int r) const {
+    int qry(int l,int r) const {
+        r++;
         int x1=(h1[r]-h1[l]*p1[r-l])%MOD1;
         if (x1<0) x1+=MOD1;
         int x2 = (h2[r]-h2[l]*p2[r-l])%MOD2;
         if (x2<0) x2 += MOD2;
-        return {x1, x2};
+        return x1*MOD1+x2;
     }
 };
 
-bool igual(int i,int j,int len,DoubleHash &ha,DoubleHash &hb){
-    return ha.get(i,i+len)==hb.get(j,j+len);
-}
+
 
 signed main(){
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
     int tt=1;//cin>>tt;
     while(tt--){
-        int n,m,k;cin>>n>>m>>k;
-        vi a(n+1,k+1),b(m+1,k+1);
-        string ans;
-        rep(i,0,n,1) cin>>a[i];
-        rep(i,0,m,1) cin>>b[i];
-        DoubleHash ha(a),hb(b);
-        int i=0,j=0;
-        while(i<n&&j<m){
-            bool ok=true;
-            int l=0,r=min(n-i+1,m-j+1);
-            while(r-l>1){
-                int mid=(r+l)/2;
-                if(igual(i,j,mid,ha,hb)) l=mid;
-                else r=mid;
-            }
-            if(!(i+l==n+1&&j+l==m+1)&&a[i+l]>b[j+l]) ok=false;
-            if(ok){
-                ans.pb('A');
-                i++;
-                continue;
-            }
-            ans.pb('B');
-            j++;
-        }
-        while(i<n){
-            ans.pb('A');
-            i++;
-        }
-        while(j<m){
-            ans.pb('B');
-            j++;
-        }
-        cout<<ans<<endl;
+        
     }
     return 0;
 }
