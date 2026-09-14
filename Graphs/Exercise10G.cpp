@@ -80,7 +80,7 @@ signed main(){
             }
         }
         f(i,0,n,1) cout<<mn[i]<<" ";
-    }
+    }   
  
     return 0;
 }
