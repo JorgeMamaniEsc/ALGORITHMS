@@ -308,10 +308,10 @@ struct SegTree{
         if(qadd[u]==0) return;
 
         qadd[izq]+=qadd[u];
-        tree[izq]+=qadd[u]*(mid-l+1);
+        tree[izq]+=qadd[u];
 
         qadd[der]+=qadd[u];
-        tree[der]+=qadd[u]*(r-mid);
+        tree[der]+=qadd[u];
         qadd[u]=0;
     }
     int merge(int izq,int der){
@@ -331,7 +331,7 @@ struct SegTree{
     void add(int u,int l,int r,int ql,int qr,int x){
         if(l>qr||r<ql) return;
         if(ql<=l&&r<=qr){
-            tree[u]+=x*(r-l+1);
+            tree[u]+=x;
             qadd[u]+=x;
             return;
         }
