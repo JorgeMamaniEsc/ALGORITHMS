@@ -37,8 +37,8 @@ using namespace std;
 //template <typename T>
 //using ordered_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
 const ld eps=1e-9;
-const int MOD=998244353;
-//const int MOD=1000000007;
+//const int MOD=998244353;
+const int MOD=1000000007;
 //const int MOD=1000003;
 //const int inf=2000000000000000000;
 const int inf=1000000000000000000LL;
@@ -276,27 +276,49 @@ struct cosa{
         return r<o.r;
     }
 };
-
+const int mx=5e5+5;
+int fact[mx],inv[mx];
+void ini(){
+    fact[0]=1;
+    rep(i,1,mx,1) fact[i]=(fact[i-1]*i)%MOD;
+    inv[mx-1]=mp(fact[mx-1],MOD-2);
+    nrep(i,mx-2,0,1) inv[i]=(inv[i+1]*(i+1))%MOD;
+}
+int com(int n,int k){
+    if(k<0||k>n) return 0;
+    int a=(inv[k]*inv[n-k])%MOD;
+    return (fact[n]*a)%MOD;
+}
 
 
 void mikunakano(){
-    vi dp(5);
-    int n,k;cin>>n>>k;
-    dp[0]=1;
-    dp[1]=0;
-    dp[2]=1;
-    dp[3]=2*dp[2];
-    dp[4]=3*(dp[2]+dp[3]);
-    //dp[i]=(i-1)*(dp[i-1]+dp[i-2])
+    ini();
+    int m;cin>>m;
+    vb a(m+1,false),b(m+1,false);
+    vi v(m+1);
+    rep(i,1,m+1,1) cin>>v[i];
+    int n=0;
+    rep(i,1,m+1,1){
+        if(v[i]==-1) {
+            n++;
+            continue;
+        }
+        a[i]=true;
+        b[v[i]]=true;
+    }
+    int k=n;
+    rep(i,1,m+1,1) if(b[i]&&!a[i]) k--;
     int ans=0;
-    auto f=[&](int n,int k)->int {
-        int a=1,b=1;
-        rep(i,n-k+1,n+1,1) a*=i;
-        rep(i,1,k+1,1) b*=i;
-        return a/b;
-    };
-    rep(i,0,k+1,1) ans+=f(n,i)*dp[i];
+    //dbg(k);
+    rep(i,0,k+1,1){
+        if(i%2==0){
+            ans=(ans+(com(k,i)*fact[n-i])%MOD)%MOD;
+        }else{
+            ans=(ans-(com(k,i)*fact[n-i])%MOD+MOD)%MOD;
+        }
+    }
     cout<<ans<<endl;
+
 }
 signed main(){
     ios::sync_with_stdio(false);
