@@ -287,7 +287,7 @@ void mikunakano(){
     dp[2]=1;
     dp[3]=2*dp[2];
     dp[4]=3*(dp[2]+dp[3]);
-    //dp[i]=(i-1)*(dp[i-1]+dp[i+2])
+    //dp[i]=(i-1)*(dp[i-1]+dp[i-2])
     int ans=0;
     auto f=[&](int n,int k)->int{
         int a=1,b=1;
