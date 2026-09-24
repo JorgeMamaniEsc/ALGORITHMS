@@ -43,16 +43,13 @@ int bp(int b,int e){
 struct BIT{
     int n;
     vi tree;
-
     void ini(int nn){
         n=nn;
         tree.assign(n+1,0);
     }
-
-    void add(int i,int val){
-        for(;i<=n;i+=i&-i) tree[i]+=val;
+    void add(int i,int x){
+        for(;i<=n;i+=i&-i) tree[i]+=x;
     }
-
     int qry(int i){
         int s=0;
         for(;i>0;i-=i&-i) s+=tree[i];
@@ -61,6 +58,15 @@ struct BIT{
     int qry(int l,int r){
         if(l>r) return 0;
         return qry(r)-qry(l-1);
+    }
+    int kth(int k){
+        int pos=0,p=1;
+        while((p<<1ll)<=n) p<<=1ll;
+        for(;p;p>>=1ll){
+            int q=pos+p;
+            if(q<=n&&tree[q]<k)pos=q,k-=tree[q];
+        }
+        return pos+1;
     }
 };
 
