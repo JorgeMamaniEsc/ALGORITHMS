@@ -60,11 +60,13 @@ struct BIT{
         return qry(r)-qry(l-1);
     }
     int kth(int k){
-        int pos=0,p=1;
-        while((p<<1ll)<=n) p<<=1ll;
-        for(;p;p>>=1ll){
+        int pos=0;
+        for(int p=(1ll<<__lg(n));p>0;p>>=1ll){
             int q=pos+p;
-            if(q<=n&&tree[q]<k)pos=q,k-=tree[q];
+            if(q<=n&&tree[q]<k){
+                pos=q;
+                k-=tree[q];
+            }
         }
         return pos+1;
     }
